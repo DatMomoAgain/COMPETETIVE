@@ -13,7 +13,7 @@ public:
         }
         while(temp != 0)
         {
-            if ((ans>0 &&ans>(INT_MAX-temp%10)/10 || ans<0 &&ans<(INT_MIN-temp%10)/10))
+            if (ans>(INT_MAX-temp%10)/10)
             {
                 return 0;
             }
