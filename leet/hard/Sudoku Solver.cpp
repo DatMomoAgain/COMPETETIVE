@@ -1,0 +1,231 @@
+class Solution {
+public:
+    bool isValid(vector<vector<char>>& board, int r, int c)
+    {
+        bool ans = true;
+        
+        //--CHECK ROW--
+        vector<char> row = board[r];
+        sort(row.begin(),row.end());
+        int index = -1;
+        
+        //check index at which '.' end
+        for(int j=0; j<9; j++)
+        {
+            if(row[j] != '.')
+            {
+                index = j;
+                break;
+            }
+        }
+        
+        //check for duplicates
+        for(int j=index; j<8; j++)
+        {
+            if(row[j] == row[j+1])
+            {
+                //cout<<"row"<<endl;
+                return false;
+            }
+        }
+        
+        
+        //--CHECK COLUMN--
+        vector<char> col;
+        
+        //adding column to col
+        for(int j=0; j<9; j++)
+        {
+            if(board[j][c] != '.')
+            {
+                col.push_back(board[j][c]);
+            }
+        }
+        
+        sort(col.begin(), col.end()); 
+        
+        for(int j=0; j<col.size()-1; j++)
+        {
+            if(col[j] == col[j+1])
+            {
+                //cout<<"col"<<endl;
+                return false;
+            }
+        }
+        
+        
+        //--CHECK BOX--
+        vector<char> box;
+        
+        //adding elements to box
+        //q and w represent start of box
+        int q = r - r%3;
+        int w = c - c%3;
+        
+        for(int j=0; j<9; j++)
+        {
+            if(board[q][w]!='.')
+                box.push_back(board[q][w]);
+            w++;
+            if(w==3 || w==6 || w==9)
+            {
+                w -= 3;
+                q++;
+            }
+        }
+        
+        
+        sort(box.begin(),box.end());
+        
+        //checking for duplicates
+        for(int j=0; j<box.size()-1;j++)
+        {
+            if (box[j]==box[j+1])
+            {
+                //cout<<"box"<<endl;
+                return false;
+            }
+        }
+        
+        
+        return ans;
+    }
+    
+    bool isFull(vector<vector<char>>& board)
+    {
+        for(int i=0; i<9; i++)
+        {
+            for(int j=0; j<9; j++)
+            {
+                if(board[i][j]=='.')
+                {
+                    //cout<<"not full"<<endl;
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    void solveSudoku(vector<vector<char>>& board) {
+        vector<vector<char>> temp = board;
+        int q=0;
+        int w=0;
+        int k=0;
+        while(!isFull(board))
+        {
+            k++;
+            //cout<<board[6][4]<<endl;
+            vector<vector<char>> temp2 = temp;
+            vector<char> s;
+            vector<char> s2;
+            vector<char> s3;
+            int count=0;
+            int c2=0;
+            int c3=0;
+            for(int i=0; i<9; i++)
+            {
+                if(temp[q][w]=='.')
+                {
+                    temp2[q][w] = (i+1) + '0';
+                    if(isValid(temp2,q,w))
+                    {
+                        //checking if its only possible number in the row
+                        for(int j=0; j<9; j++)
+                        {
+                            if(temp[q][j]=='.')
+                            {
+                                temp[q][j] = (i+1)+'0';
+                                if(isValid(temp,q,j))
+                                {
+                                    c2++;
+                                    s2.push_back((i+1) + '0');
+                                }
+                                temp[q][j]='.';
+                            }
+                        }
+                        if(c2==1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            c2=0;
+                            s2 = {};
+                        }
+                            
+                        //checking if its only possible number in the column
+                        for(int j=0; j<9; j++)
+                        {
+                            if(temp[j][w]=='.')
+                            {
+                                temp[j][w] = (i+1)+'0';
+                                if(isValid(temp,j,w))
+                                {
+                                    c3++;
+                                    s3.push_back((i+1) + '0');
+                                }
+                                temp[j][w]='.';
+                            }
+                        }
+                        if(c3==1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            c3 =0;
+                            s3 = {};
+                        }
+                        
+                        count++;
+                        s.push_back((i+1) + '0');
+                    }
+                }
+                
+            }
+            if(count==1||c2==1 || c3==1)
+            {
+                if(c2==1){
+                    temp2[q][w] = s2[0];
+                    s2 = {};
+                }
+                else if(c3==1){
+                    temp2[q][w] = s3[0];
+                    s3 = {};
+                }
+                else if(count ==1){
+                    temp2[q][w] = s[0];
+                }
+                board = temp2;
+                temp = temp2;
+            }
+            s={};
+            
+            w++;
+            if(w==9)
+            {
+                w=0;
+                q++;
+            }
+            if(q==9)
+            {
+                w=0;
+                q=0;
+            }
+            
+            //DEBUG
+            if(k==1000)
+            {
+                for(int i=0; i<9;i++)
+                {
+                    for(int j=0; j<9; j++)
+                    {
+                        cout<<board[i][j]<<"  ";
+                    }
+                    cout<<endl;
+                }
+            }
+        }
+    }
+};
