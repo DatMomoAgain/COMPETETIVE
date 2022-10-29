@@ -1,3 +1,9 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
 class Solution {
 public:
     bool isValid(vector<vector<char>>& board, int r, int c)
@@ -24,7 +30,6 @@ public:
         {
             if(row[j] == row[j+1])
             {
-                //cout<<"row"<<endl;
                 return false;
             }
         }
@@ -48,7 +53,6 @@ public:
         {
             if(col[j] == col[j+1])
             {
-                //cout<<"col"<<endl;
                 return false;
             }
         }
@@ -82,7 +86,6 @@ public:
         {
             if (box[j]==box[j+1])
             {
-                //cout<<"box"<<endl;
                 return false;
             }
         }
@@ -99,7 +102,6 @@ public:
             {
                 if(board[i][j]=='.')
                 {
-                    //cout<<"not full"<<endl;
                     return false;
                 }
             }
@@ -108,8 +110,92 @@ public:
     }
     
     void solveSudoku(vector<vector<char>>& board) {
-        vector<vector<char>> temp = board;
-        int q=0;
+        //BACKTRACKING
+        int i1=0;
+        int i2=0;
+        vector<int> if1; 
+        vector<int> if2;
+        int c=0;
+        vector<char> preVal;
+        while(!isFull(board))
+        {
+            if(board[i1][i2] == '.' || c!=0)
+            {
+                if(c==0){
+                    for(char i='1'; i<='9'; i++)
+                    {
+                        board[i1][i2] = i;
+                        if(isValid(board, i1, i2))
+                        {
+                            if1.push_back(i1);
+                            if2.push_back(i2);
+                            preVal.push_back(i);
+                            break;
+                        }
+                        else if(i=='9')
+                        {
+                            board[i1][i2] = '.';
+                            i1 = if1[if1.size()-1];
+                            i2 = if2[if2.size()-1]-1;
+                            if1.pop_back();
+                            if2.pop_back();
+                            c++;
+                        }
+                        else
+                        {
+                            board[i1][i2] = '.';
+                        }
+                    } //char i for loop
+                } //if c==0
+                else
+                {
+                    c =0;
+                    for(char i=preVal[preVal.size()-1]; i<='9'; i++)
+                    {
+                        board[i1][i2] = i+1;
+                        if(isValid(board, i1, i2) && board[i1][i2]<='9')
+                        {
+                            if1.push_back(i1);
+                            if2.push_back(i2);
+                            preVal.pop_back();
+                            preVal.push_back(i+1);
+                            break;
+                        }
+                        else if(i+1>='9')
+                        {
+                            board[i1][i2] = '.';
+                            i1 = if1[if1.size()-1];
+                            i2 = if2[if2.size()-1]-1;
+                            if1.pop_back();
+                            if2.pop_back();
+                            preVal.pop_back();
+                            c++;
+                            break;
+                        }
+                        else
+                        {
+                            board[i1][i2] = '.';
+                        }
+                    }
+                }
+            } //main if condition
+            
+            //traversing board 
+            i2++;
+            if(i2==9)
+            {
+                i2 = 0;
+                i1++;
+            }
+            if(i1==9)
+            {
+                i1=0;
+                i2=0;
+            }
+        }
+
+//MANUALLY SOLVING ATTEMPT WITHOUT GUESSING
+        /*int q=0;
         int w=0;
         int k=0;
         while(!isFull(board))
@@ -119,7 +205,6 @@ public:
             vector<vector<char>> temp2 = temp;
             vector<char> s;
             vector<char> s2;
-            vector<char> s3;
             int count=0;
             int c2=0;
             int c3=0;
@@ -152,47 +237,18 @@ public:
                         {
                             c2=0;
                             s2 = {};
-                        }
-                            
-                        //checking if its only possible number in the column
-                        for(int j=0; j<9; j++)
-                        {
-                            if(temp[j][w]=='.')
-                            {
-                                temp[j][w] = (i+1)+'0';
-                                if(isValid(temp,j,w))
-                                {
-                                    c3++;
-                                    s3.push_back((i+1) + '0');
-                                }
-                                temp[j][w]='.';
-                            }
-                        }
-                        if(c3==1)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            c3 =0;
-                            s3 = {};
-                        }
-                        
+                        }                        
                         count++;
                         s.push_back((i+1) + '0');
                     }
                 }
                 
             }
-            if(count==1||c2==1 || c3==1)
+            if(count==1||c2==1)
             {
                 if(c2==1){
                     temp2[q][w] = s2[0];
                     s2 = {};
-                }
-                else if(c3==1){
-                    temp2[q][w] = s3[0];
-                    s3 = {};
                 }
                 else if(count ==1){
                     temp2[q][w] = s[0];
@@ -215,7 +271,7 @@ public:
             }
             
             //DEBUG
-            if(k==1000)
+            if(k==1980)
             {
                 for(int i=0; i<9;i++)
                 {
@@ -226,6 +282,6 @@ public:
                     cout<<endl;
                 }
             }
-        }
+        }*/
     }
 };
