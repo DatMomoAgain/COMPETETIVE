@@ -27,16 +27,7 @@ public:
             i++;
             if(i>max)
                 max = i;
-            cout<<"(i)"<<i<<endl;
             traverse(root->left, i, max);
-            if (root->right!=NULL)
-                i--;
-            cout<<"(ii)"<<i<<endl;
-            if(root->right!=NULL)
-            {
-                i++;
-                cout<<"(iii)"<<i<<endl;
-            }
             traverse(root->right, i, max);
             i--;
         }
