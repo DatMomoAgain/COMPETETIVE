@@ -20,11 +20,14 @@ public:
         while(temp->left!=NULL || temp->right!=NULL || v.size()!=0)
         {
             vals.push_back(temp->val);
+
+            //check if value can be found if bst was correct
             if(!search(root, temp->val))
             {
                 cout<<temp->val;
                 return false;
             }
+
             //traversing begins
             if(temp->left)
             {
@@ -47,8 +50,10 @@ public:
             }
             //traversing ends 
         }
+
         vals.push_back(temp->val);
         sort(vals.begin(),vals.end());
+        //check for duplicates
         for(int i=0; i<vals.size()-1;i++)
         {
             if(vals[i]==vals[i+1])
@@ -56,9 +61,12 @@ public:
                 return false;
             }
         }
+
+        //this done because last node is not checked in while loop
         if(!search(root, temp->val)){
             cout<<"last";
             return false;}
+            
         return true;
     }
 
