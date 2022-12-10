@@ -13,15 +13,13 @@ class Solution {
 public:
     bool findTarget(TreeNode* root, int k) {
         vector<int> vals;
-        vector<int> kMinusVals;
         traverse(root, vals);
 
         for(int i=0; i<vals.size(); i++)
         {
-            kMinusVals.push_back(k-vals[i]);
-            if(binary(vals, kMinusVals[i]))
+            if(binary(vals, k-vals[i]))
             {
-                if(vals[i]==kMinusVals[i]){
+                if(vals[i]==k-vals[i]){
                     continue;}
 
                 return true;
